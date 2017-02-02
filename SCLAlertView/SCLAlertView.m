@@ -43,7 +43,6 @@
 @property (strong, nonatomic) UIWindow *previousWindow;
 @property (strong, nonatomic) UIWindow *SCLAlertWindow;
 @property (copy, nonatomic) SCLDismissBlock dismissBlock;
-@property (copy, nonatomic) SCLDismissAnimationCompletionBlock dismissAnimationCompletionBlock;
 @property (weak, nonatomic) UIViewController *rootViewController;
 @property (weak, nonatomic) id<UIGestureRecognizerDelegate> restoreInteractivePopGestureDelegate;
 @property (assign, nonatomic) SystemSoundID soundID;
@@ -59,18 +58,11 @@
 @property (nonatomic) CGFloat windowWidth;
 @property (nonatomic) CGFloat subTitleHeight;
 @property (nonatomic) CGFloat subTitleY;
+@property (nonatomic) CGFloat iconY;
 
 @end
 
 @implementation SCLAlertView
-
-CGFloat kCircleHeight;
-CGFloat kCircleTopPosition;
-CGFloat kCircleBackgroundTopPosition;
-CGFloat kCircleHeightBackground;
-CGFloat kActivityIndicatorHeight;
-CGFloat kTitleTop;
-CGFloat kTitleHeight;
 
 // Timer
 NSTimer *durationTimer;
@@ -152,12 +144,13 @@ SCLTimerDisplay *buttonTimer;
 - (void)setupViewWindowWidth:(CGFloat)windowWidth
 {
     // Default values
-    kCircleBackgroundTopPosition = -15.0f;
-    kCircleHeight = 56.0f;
-    kCircleHeightBackground = 62.0f;
-    kActivityIndicatorHeight = 40.0f;
-    kTitleTop = 30.0f;
-    kTitleHeight = 40.0f;
+    _kCircleBackgroundTopPosition = -15.0f;
+    _kCircleHeight = 56.0f;
+    _kCircleHeightBackground = 62.0f;
+    _kActivityIndicatorHeight = 40.0f;
+    _kTitleTop = 30.0f;
+    _kTitleHeight = 40.0f;
+    _iconY = 0.0f;
     self.subTitleY = 70.0f;
     self.subTitleHeight = 90.0f;
     self.circleIconHeight = 20.0f;
@@ -185,7 +178,7 @@ SCLTimerDisplay *buttonTimer;
     _viewText = [[UITextView alloc] init];
     _contentView = [[UIView alloc] init];
     _circleView = [[UIView alloc] init];
-    _circleViewBackground = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kCircleHeightBackground, kCircleHeightBackground)];
+    _circleViewBackground = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, _kCircleHeightBackground, _kCircleHeightBackground)];
     _circleIconImageView = [[UIImageView alloc] init];
     _backgroundView = [[UIImageView alloc]initWithFrame:[self mainScreenFrame]];
     _buttons = [[NSMutableArray alloc] init];
@@ -197,17 +190,17 @@ SCLTimerDisplay *buttonTimer;
     [self.view addSubview:_circleViewBackground];
     
     // Circle View
-    CGFloat x = (kCircleHeightBackground - kCircleHeight) / 2;
-    _circleView.frame = CGRectMake(x, x, kCircleHeight, kCircleHeight);
+    CGFloat x = (_kCircleHeightBackground - _kCircleHeight) / 2;
+    _circleView.frame = CGRectMake(x, x, _kCircleHeight, _kCircleHeight);
     _circleView.layer.cornerRadius = _circleView.frame.size.height / 2;
     
     // Circle Background View
     _circleViewBackground.backgroundColor = [UIColor whiteColor];
     _circleViewBackground.layer.cornerRadius = _circleViewBackground.frame.size.height / 2;
-    x = (kCircleHeight - _circleIconHeight) / 2;
+    x = (_kCircleHeight - _circleIconHeight) / 2;
     
     // Circle Image View
-    _circleIconImageView.frame = CGRectMake(x, x, _circleIconHeight, _circleIconHeight);
+    _circleIconImageView.frame = CGRectMake(x, _iconY, _circleIconHeight, _circleIconHeight);
     _circleIconImageView.contentMode = UIViewContentModeScaleAspectFill;
     
     [_circleViewBackground addSubview:_circleView];
@@ -220,7 +213,7 @@ SCLTimerDisplay *buttonTimer;
     _labelTitle.numberOfLines = 1;
     _labelTitle.textAlignment = NSTextAlignmentCenter;
     _labelTitle.font = [UIFont fontWithName:_titleFontFamily size:_titleFontSize];
-    _labelTitle.frame = CGRectMake(12.0f, kTitleTop, _windowWidth - 24.0f, kTitleHeight);
+    _labelTitle.frame = CGRectMake(12.0f, _kTitleTop, _windowWidth - 24.0f, _kTitleHeight);
     
     // View text
     _viewText.editable = NO;
@@ -241,8 +234,8 @@ SCLTimerDisplay *buttonTimer;
     _contentView.layer.cornerRadius = 5.0f;
     _contentView.layer.masksToBounds = YES;
     _contentView.layer.borderWidth = 0.5f;
-    [_contentView addSubview:_viewText];    
-
+    [_contentView addSubview:_viewText];
+    
     CGRect position = [self.contentView convertRect:self.labelTitle.frame toView:self.view];
     _labelTitle.frame = position;
     [self.view addSubview:_labelTitle];
@@ -287,19 +280,19 @@ SCLTimerDisplay *buttonTimer;
         _circleIconHeight = 70.0f;
         
         // Adjust coordinate variables for larger sized top circle
-        kCircleBackgroundTopPosition = -61.0f;
-        kCircleHeight = 106.0f;
-        kCircleHeightBackground = 122.0f;
+        _kCircleBackgroundTopPosition = -61.0f;
+        _kCircleHeight = 106.0f;
+        _kCircleHeightBackground = 122.0f;
         
         // Reposition inner circle appropriately
-        CGFloat x = (kCircleHeightBackground - kCircleHeight) / 2;
-        _circleView.frame = CGRectMake(x, x, kCircleHeight, kCircleHeight);
+        CGFloat x = (_kCircleHeightBackground - _kCircleHeight) / 2;
+        _circleView.frame = CGRectMake(x, x, _kCircleHeight, _kCircleHeight);
         if (_labelTitle.text == nil)
         {
-            kTitleTop = kCircleHeightBackground / 2;
+            _kTitleTop = _kCircleHeightBackground / 2;
         }
     } else {
-        kCircleBackgroundTopPosition = -(kCircleHeightBackground / 2);
+        _kCircleBackgroundTopPosition = -(_kCircleHeightBackground / 2) + _kCircleHeight / 2;
     }
     
     // Check if the rootViewController is modal, if so we need to get the modal size not the main screen size
@@ -341,35 +334,35 @@ SCLTimerDisplay *buttonTimer;
         // Set frames
         self.view.frame = r;
         _contentView.frame = CGRectMake(0.0f, 0.0f, _windowWidth, _windowHeight);
-        _circleViewBackground.frame = CGRectMake(_windowWidth / 2 - kCircleHeightBackground / 2, kCircleBackgroundTopPosition, kCircleHeightBackground, kCircleHeightBackground);
+        _circleViewBackground.frame = CGRectMake(_windowWidth / 2 - _kCircleHeightBackground / 2, _kCircleBackgroundTopPosition, _kCircleHeightBackground, _kCircleHeightBackground);
         _circleViewBackground.layer.cornerRadius = _circleViewBackground.frame.size.height / 2;
         _circleView.layer.cornerRadius = _circleView.frame.size.height / 2;
-        _circleIconImageView.frame = CGRectMake(kCircleHeight / 2 - _circleIconHeight / 2, kCircleHeight / 2 - _circleIconHeight / 2, _circleIconHeight, _circleIconHeight);
-        _labelTitle.frame = CGRectMake(12.0f, kTitleTop, _windowWidth - 24.0f, kTitleHeight);
+        _circleIconImageView.frame = CGRectMake(_kCircleHeight / 2 - _circleIconHeight / 2, _kCircleHeight / 2 - _circleIconHeight / 2, _circleIconHeight, _circleIconHeight);
+        _labelTitle.frame = CGRectMake(12.0f, _kTitleTop, _windowWidth - 24.0f, _kTitleHeight);
     }
     else
     {
         CGFloat x = (sz.width - _windowWidth) / 2;
-        CGFloat y = (sz.height - _windowHeight - (kCircleHeight / 8)) / 2;
+        CGFloat y = (sz.height - _windowHeight - (_kCircleHeight / 8)) / 2;
         
         _contentView.frame = CGRectMake(x, y, _windowWidth, _windowHeight);
-        y -= kCircleHeightBackground / 2;
-        x = (sz.width - kCircleHeightBackground) / 2;
-        _circleView.layer.cornerRadius = _circleView.frame.size.height / 2;        
-        _circleViewBackground.frame = CGRectMake(x, y, kCircleHeightBackground, kCircleHeightBackground);
-        _circleViewBackground.layer.cornerRadius = _circleViewBackground.frame.size.height / 2;        
-        _circleIconImageView.frame = CGRectMake(kCircleHeight / 2 - _circleIconHeight / 2, kCircleHeight / 2 - _circleIconHeight / 2, _circleIconHeight, _circleIconHeight);
-        _labelTitle.frame = CGRectMake(12.0f + self.contentView.frame.origin.x, kTitleTop + self.contentView.frame.origin.y, _windowWidth - 24.0f, kTitleHeight);
+        y -= _kCircleHeightBackground / 2;
+        x = (sz.width - _kCircleHeightBackground) / 2;
+        _circleView.layer.cornerRadius = _circleView.frame.size.height / 2;
+        _circleViewBackground.frame = CGRectMake(x, y, _kCircleHeightBackground, _kCircleHeightBackground);
+        _circleViewBackground.layer.cornerRadius = _circleViewBackground.frame.size.height / 2;
+        _circleIconImageView.frame = CGRectMake(_kCircleHeight / 2 - _circleIconHeight / 2, _kCircleHeight / 2 - _circleIconHeight / 2, _circleIconHeight, _circleIconHeight);
+        _labelTitle.frame = CGRectMake(12.0f + self.contentView.frame.origin.x, _kTitleTop + self.contentView.frame.origin.y, _windowWidth - 24.0f, _kTitleHeight);
     }
     
     // Text fields
-    CGFloat y = (_labelTitle.text == nil) ? kTitleTop : kTitleTop + _labelTitle.frame.size.height;
+    CGFloat y = (_labelTitle.text == nil) ? _kTitleTop : _kTitleTop + _labelTitle.frame.size.height;
     _viewText.frame = CGRectMake(12.0f, y, _windowWidth - 24.0f, _subTitleHeight);
     
     if (!_labelTitle && !_viewText) {
         y = 0.0f;
     }
-
+    
     y += _subTitleHeight + 14.0f;
     for (SCLTextView *textField in _inputs)
     {
@@ -495,6 +488,9 @@ SCLTimerDisplay *buttonTimer;
     }
 }
 
+#pragma mark - Custom icon
+
+
 #pragma mark - Custom Fonts
 
 - (void)setTitleFontFamily:(NSString *)titleFontFamily withSize:(CGFloat)size
@@ -503,6 +499,7 @@ SCLTimerDisplay *buttonTimer;
     self.titleFontSize = size;
     self.labelTitle.font = [UIFont fontWithName:_titleFontFamily size:_titleFontSize];
 }
+
 
 - (void)setBodyTextFontFamily:(NSString *)bodyTextFontFamily withSize:(CGFloat)size
 {
@@ -555,7 +552,7 @@ SCLTimerDisplay *buttonTimer;
 {
     // Add UIActivityIndicatorView
     _activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    _activityIndicatorView.frame = CGRectMake(kCircleHeight / 2 - kActivityIndicatorHeight / 2, kCircleHeight / 2 - kActivityIndicatorHeight / 2, kActivityIndicatorHeight, kActivityIndicatorHeight);
+    _activityIndicatorView.frame = CGRectMake(_kCircleHeight / 2 - _kActivityIndicatorHeight / 2, _kCircleHeight / 2 - _kActivityIndicatorHeight / 2, _kActivityIndicatorHeight, _kActivityIndicatorHeight);
     [_circleView addSubview:_activityIndicatorView];
 }
 
@@ -912,7 +909,7 @@ SCLTimerDisplay *buttonTimer;
         [_labelTitle removeFromSuperview];
         _labelTitle = nil;
         
-        _subTitleY = kCircleHeight - 20;
+        _subTitleY = _kCircleHeight - 20;
     }
     
     // Subtitle
@@ -956,11 +953,11 @@ SCLTimerDisplay *buttonTimer;
         _viewText = nil;
         
         // Move up
-        _labelTitle.frame = CGRectMake(12.0f, 37.0f, _windowWidth - 24.0f, kTitleHeight);
+        _labelTitle.frame = CGRectMake(12.0f, 37.0f, _windowWidth - 24.0f, _kTitleHeight);
     }
     
     if (!_labelTitle && !_viewText) {
-        self.windowHeight -= kTitleTop;
+        self.windowHeight -= _kTitleTop;
     }
     
     // Add button, if necessary
@@ -978,8 +975,15 @@ SCLTimerDisplay *buttonTimer;
     }
     else
     {
+        
+        NSLog(@"img: %@", _image4icon);
+        if (_image4icon) {
+            iconImage = _image4icon;
+        }
+        
         if (self.iconTintColor) {
             self.circleIconImageView.tintColor = self.iconTintColor;
+            
             iconImage  = [iconImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         }
         self.circleIconImageView.image = iconImage;
@@ -1171,10 +1175,6 @@ SCLTimerDisplay *buttonTimer;
     self.dismissBlock = dismissBlock;
 }
 
-- (void)alertDismissAnimationIsCompleted:(SCLDismissAnimationCompletionBlock)dismissAnimationCompletionBlock{
-    self.dismissAnimationCompletionBlock = dismissAnimationCompletionBlock;
-}
-
 - (SCLForceHideBlock)forceHideBlock:(SCLForceHideBlock)forceHideBlock
 {
     _forceHideBlock = forceHideBlock;
@@ -1320,7 +1320,7 @@ SCLTimerDisplay *buttonTimer;
         case SCLAlertViewHideAnimationSlideOutFromCenter:
             [self slideOutFromCenter];
             break;
-        
+            
         case SCLAlertViewHideAnimationSimplyDisappear:
             [self simplyDisappear];
             break;
@@ -1380,9 +1380,6 @@ SCLTimerDisplay *buttonTimer;
         {
             [self.view removeFromSuperview];
             [self removeFromParentViewController];
-        }
-        if ( _dismissAnimationCompletionBlock ){
-            self.dismissAnimationCompletionBlock();
         }
     }];
 }
@@ -1643,7 +1640,7 @@ SCLTimerDisplay *buttonTimer;
 {
     self.backgroundView.alpha = 0.0f;
     self.view.alpha = 0.0f;
-
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.backgroundView.alpha = _backgroundOpacity;
         self.view.alpha = 1.0f;
@@ -1977,6 +1974,118 @@ SCLTimerDisplay *buttonTimer;
     }
     return _circleIconHeight;
 }
+
+- (SCLAlertViewBuilder *(^) (CGFloat kCircleHeight))kCircleHeight {
+    if (!_kCircleHeight) {
+        __weak typeof(self) weakSelf = self;
+        _kCircleHeight = ^(CGFloat kCircleHeight) {
+            weakSelf.alertView.kCircleHeight = kCircleHeight;
+            return weakSelf;
+        };
+    }
+    return _kCircleHeight;
+}
+
+- (SCLAlertViewBuilder *(^) (CGFloat kCircleTopPosition))kCircleTopPosition {
+    if (!_kCircleTopPosition) {
+        __weak typeof(self) weakSelf = self;
+        _kCircleTopPosition = ^(CGFloat kCircleTopPosition) {
+            weakSelf.alertView.kCircleTopPosition = kCircleTopPosition;
+            return weakSelf;
+        };
+    }
+    return _kCircleTopPosition;
+}
+
+- (SCLAlertViewBuilder *(^) (CGFloat kCircleBackgroundTopPosition))kCircleBackgroundTopPosition {
+    if (!_kCircleBackgroundTopPosition) {
+        __weak typeof(self) weakSelf = self;
+        _kCircleBackgroundTopPosition = ^(CGFloat kCircleBackgroundTopPosition) {
+            weakSelf.alertView.kCircleBackgroundTopPosition = kCircleBackgroundTopPosition;
+            return weakSelf;
+        };
+    }
+    return _kCircleBackgroundTopPosition;
+}
+
+- (SCLAlertViewBuilder *(^) (CGFloat kCircleBackgroundTopPositionOffset))kCircleBackgroundTopPositionOffset {
+    if (!_kCircleBackgroundTopPositionOffset) {
+        __weak typeof(self) weakSelf = self;
+        _kCircleBackgroundTopPositionOffset = ^(CGFloat kCircleBackgroundTopPositionOffset) {
+            weakSelf.alertView.kCircleBackgroundTopPositionOffset = kCircleBackgroundTopPositionOffset;
+            return weakSelf;
+        };
+    }
+    return _kCircleBackgroundTopPositionOffset;
+}
+
+- (SCLAlertViewBuilder *(^) (CGFloat kCircleHeightBackground))kCircleHeightBackground {
+    if (!_kCircleHeightBackground) {
+        __weak typeof(self) weakSelf = self;
+        _kCircleHeightBackground = ^(CGFloat kCircleHeightBackground) {
+            weakSelf.alertView.kCircleHeightBackground = kCircleHeightBackground;
+            return weakSelf;
+        };
+    }
+    return _kCircleHeightBackground;
+}
+
+- (SCLAlertViewBuilder *(^) (CGFloat kActivityIndicatorHeight))kActivityIndicatorHeight {
+    if (!_kActivityIndicatorHeight) {
+        __weak typeof(self) weakSelf = self;
+        _kActivityIndicatorHeight = ^(CGFloat kActivityIndicatorHeight) {
+            weakSelf.alertView.kActivityIndicatorHeight = kActivityIndicatorHeight;
+            return weakSelf;
+        };
+    }
+    return _kActivityIndicatorHeight;
+}
+
+- (SCLAlertViewBuilder *(^) (CGFloat kTitleTop))kTitleTop {
+    if (!_kTitleTop) {
+        __weak typeof(self) weakSelf = self;
+        _kTitleTop = ^(CGFloat kTitleTop) {
+            weakSelf.alertView.kTitleTop = kTitleTop;
+            return weakSelf;
+        };
+    }
+    return _kTitleTop;
+}
+
+- (SCLAlertViewBuilder *(^) (CGFloat kTitleHeight))kTitleHeight {
+    if (!_kTitleHeight) {
+        __weak typeof(self) weakSelf = self;
+        _kTitleHeight = ^(CGFloat kTitleHeight) {
+            weakSelf.alertView.kTitleHeight = kTitleHeight;
+            return weakSelf;
+        };
+    }
+    return _kTitleHeight;
+}
+
+
+- (SCLAlertViewBuilder *(^) (CGFloat size))setIconY {
+    if (!_setIconY) {
+        __weak typeof(self) weakSelf = self;
+        _setIconY = ^(CGFloat size) {
+            weakSelf.alertView.iconY = size;
+            return weakSelf;
+        };
+    }
+    return _setIconY;
+}
+
+- (SCLAlertViewBuilder *(^) (NSString *titleFontFamily, CGFloat size))setTitleFontFamily {
+    if (!_setTitleFontFamily) {
+        __weak typeof(self) weakSelf = self;
+        _setTitleFontFamily = ^(NSString *titleFontFamily, CGFloat size) {
+            [weakSelf.alertView setTitleFontFamily:titleFontFamily withSize:size];
+            return weakSelf;
+        };
+    }
+    return _setTitleFontFamily;
+}
+
 - (SCLAlertViewBuilder *(^) (CGRect extensionBounds))extensionBounds {
     if (!_extensionBounds) {
         __weak typeof(self) weakSelf = self;
@@ -2018,16 +2127,6 @@ SCLTimerDisplay *buttonTimer;
         };
     }
     return _alertIsDismissed;
-}
--(SCLAlertViewBuilder *(^)(SCLDismissAnimationCompletionBlock))alertDismissAnimationIsCompleted{
-    if (!_alertDismissAnimationIsCompleted) {
-        __weak typeof(self) weakSelf = self;
-        _alertDismissAnimationIsCompleted = ^(SCLDismissAnimationCompletionBlock dismissAnimationCompletionBlock) {
-            [weakSelf.alertView alertDismissAnimationIsCompleted:dismissAnimationCompletionBlock];
-            return weakSelf;
-        };
-    }
-    return _alertDismissAnimationIsCompleted;
 }
 - (SCLAlertViewBuilder *(^) (void))removeTopCircle {
     if (!_removeTopCircle) {
@@ -2089,16 +2188,7 @@ SCLTimerDisplay *buttonTimer;
     }
     return _addTimerToButtonIndex;
 }
-- (SCLAlertViewBuilder *(^) (NSString *titleFontFamily, CGFloat size))setTitleFontFamily {
-    if (!_setTitleFontFamily) {
-        __weak typeof(self) weakSelf = self;
-        _setTitleFontFamily = ^(NSString *titleFontFamily, CGFloat size) {
-            [weakSelf.alertView setTitleFontFamily:titleFontFamily withSize:size];
-            return weakSelf;
-        };
-    }
-    return _setTitleFontFamily;
-}
+
 - (SCLAlertViewBuilder *(^) (NSString *bodyTextFontFamily, CGFloat size))setBodyTextFontFamily {
     if (!_setBodyTextFontFamily) {
         __weak typeof(self) weakSelf = self;
@@ -2166,7 +2256,7 @@ SCLTimerDisplay *buttonTimer;
                 button = [weakSelf.alertView addButton:builder.parameterTitle actionBlock:builder.parameterActionBlock];
             }
             builder.button = button;
-            return weakSelf; 
+            return weakSelf;
         };
     }
     return _addButtonWithBuilder;
@@ -2330,5 +2420,7 @@ SCLTimerDisplay *buttonTimer;
     }
     return _show;
 }
+
+
 
 @end

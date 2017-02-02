@@ -20,7 +20,7 @@ typedef void (^SCLDismissBlock)(void);
 typedef void (^SCLDismissAnimationCompletionBlock)(void);
 typedef void (^SCLForceHideBlock)(void);
 
-@interface SCLAlertView : UIViewController 
+@interface SCLAlertView : UIViewController
 
 /** Alert Styles
  *
@@ -101,7 +101,7 @@ typedef NS_ENUM(NSInteger, SCLAlertViewBackground)
  * (Default: NO)
  */
 @property BOOL useLargerIcon;
-    
+
 /** Title Label
  *
  * The text displayed as title.
@@ -199,6 +199,14 @@ typedef NS_ENUM(NSInteger, SCLAlertViewBackground)
  */
 @property (nonatomic, strong) UIColor *iconTintColor;
 
+
+/** Own icon image property
+ *
+ * OWN icon image
+ */
+@property (nonatomic, strong) UIImage *image4icon;
+
+
 /** Set custom circle icon height.
  *
  * Circle icon height
@@ -228,6 +236,23 @@ typedef NS_ENUM(NSInteger, SCLAlertViewBackground)
  * Horizontal aligment instead of vertically if YES
  */
 @property (nonatomic) BOOL horizontalButtons;
+
+
+/** Additional properties
+ *
+ * Init with SCLAlertViewBuilder
+ */
+@property (nonatomic) CGFloat kCircleHeight;
+@property (nonatomic) CGFloat kCircleTopPosition;
+@property (nonatomic) CGFloat kCircleBackgroundTopPosition;
+@property (nonatomic) CGFloat kCircleBackgroundTopPositionOffset;
+@property (nonatomic) CGFloat kCircleHeightBackground;
+@property (nonatomic) CGFloat kActivityIndicatorHeight;
+@property (nonatomic) CGFloat kTitleTop;
+@property (nonatomic) CGFloat kTitleHeight;
+//@property (nonatomic) CGFloat iconY;
+
+- (void)setIconY:(CGFloat)size;
 
 /** Initialize SCLAlertView using a new window.
  *
@@ -544,9 +569,24 @@ typedef NS_ENUM(NSInteger, SCLAlertViewBackground)
 @property(copy, nonatomic) SCLAlertViewBuilder *(^backgroundViewColor) (UIColor *backgroundViewColor);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^iconTintColor) (UIColor *iconTintColor);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^circleIconHeight) (CGFloat circleIconHeight);
+
+@property(copy, nonatomic) SCLAlertViewBuilder *(^kCircleHeight) (CGFloat kCircleHeight);
+@property(copy, nonatomic) SCLAlertViewBuilder *(^kCircleTopPosition) (CGFloat kCircleTopPosition);
+@property(copy, nonatomic) SCLAlertViewBuilder *(^kCircleBackgroundTopPosition) (CGFloat kCircleBackgroundTopPosition);
+@property(copy, nonatomic) SCLAlertViewBuilder *(^kCircleBackgroundTopPositionOffset) (CGFloat kCircleBackgroundTopPositionOffset);
+@property(copy, nonatomic) SCLAlertViewBuilder *(^kCircleHeightBackground) (CGFloat kCircleHeightBackground);
+@property(copy, nonatomic) SCLAlertViewBuilder *(^kActivityIndicatorHeight) (CGFloat kActivityIndicatorHeight);
+@property(copy, nonatomic) SCLAlertViewBuilder *(^kTitleTop) (CGFloat kTitleTop);
+@property(copy, nonatomic) SCLAlertViewBuilder *(^kTitleHeight) (CGFloat kTitleHeight);
+//@property(copy, nonatomic) SCLAlertViewBuilder *(^iconY) (CGFloat iconY);
+
+
 @property(copy, nonatomic) SCLAlertViewBuilder *(^extensionBounds) (CGRect extensionBounds);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^statusBarHidden) (BOOL statusBarHidden);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^statusBarStyle) (UIStatusBarStyle statusBarStyle);
+
+// Adding property the icon as an image
+@property(copy, nonatomic) SCLAlertViewBuilder *(^image4icon)(UIImage *image4icon);
 
 #pragma mark - Custom Setters
 @property(copy, nonatomic) SCLAlertViewBuilder *(^alertIsDismissed) (SCLDismissBlock dismissBlock);
@@ -558,11 +598,14 @@ typedef NS_ENUM(NSInteger, SCLAlertViewBackground)
 @property(copy, nonatomic) SCLAlertViewBuilder *(^addSwitchViewWithLabelTitle)(NSString *title);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^addTimerToButtonIndex)(NSInteger buttonIndex, BOOL reverse);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^setTitleFontFamily)(NSString *titleFontFamily, CGFloat size);
+@property(copy, nonatomic) SCLAlertViewBuilder *(^setIconY)(CGFloat size);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^setBodyTextFontFamily)(NSString *bodyTextFontFamily, CGFloat size);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^setButtonsTextFontFamily)(NSString *buttonsFontFamily, CGFloat size);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^addButtonWithActionBlock)(NSString *title, SCLActionBlock action);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^addButtonWithValidationBlock)(NSString *title, SCLValidationBlock validationBlock, SCLActionBlock action);
 @property(copy, nonatomic) SCLAlertViewBuilder *(^addButtonWithTarget)(NSString *title, id target, SEL selector);
+
+
 
 #pragma mark - Builders
 @property(copy, nonatomic) SCLAlertViewBuilder *(^addButtonWithBuilder)(SCLALertViewButtonBuilder *builder);

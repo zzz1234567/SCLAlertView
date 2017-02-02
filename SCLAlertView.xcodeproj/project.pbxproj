@@ -37,6 +37,8 @@
 		EF994B1A1D47AB4A00619DFF /* SCLTimerDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 572BB1461B8383B3002DEE38 /* SCLTimerDisplay.m */; };
 		EF994B1B1D47AB4A00619DFF /* SCLTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD24453B1BAC383600892117 /* SCLTextView.m */; };
 		EF994B1C1D47AB4A00619DFF /* SCLSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = CF6FB1231C5926FC009715F3 /* SCLSwitchView.m */; };
+		F596EAAB1E439EF500D1F092 /* AlertModuleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F596EAA71E439EF500D1F092 /* AlertModuleView.xib */; };
+		F596EAAC1E439EF500D1F092 /* AlertModuleView.m in Sources */ = {isa = PBXBuildFile; fileRef = F596EAA91E439EF500D1F092 /* AlertModuleView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +93,9 @@
 		DDB15FE019D5D85B00173158 /* SCLAlertViewStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCLAlertViewStyleKit.m; sourceTree = "<group>"; };
 		EF994B081D47AB1400619DFF /* SCLAlertViewFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SCLAlertViewFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF994B0C1D47AB1400619DFF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F596EAA71E439EF500D1F092 /* AlertModuleView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlertModuleView.xib; sourceTree = "<group>"; };
+		F596EAA81E439EF500D1F092 /* AlertModuleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertModuleView.h; sourceTree = "<group>"; };
+		F596EAA91E439EF500D1F092 /* AlertModuleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertModuleView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +174,7 @@
 		DDB15F9F19D5B7C600173158 /* SCLAlertViewExample */ = {
 			isa = PBXGroup;
 			children = (
+				F596EAAA1E439EF500D1F092 /* FLXJ_AlertModuleView */,
 				DDB15FCF19D5B8BF00173158 /* Images.xcassets */,
 				DDB15FC619D5B88A00173158 /* AppDelegate.h */,
 				DDB15FC719D5B88A00173158 /* AppDelegate.m */,
@@ -241,6 +247,17 @@
 				44E430DB1D889255002FE849 /* SCLAlertViewFramework.h */,
 			);
 			path = SCLAlertViewFramework;
+			sourceTree = "<group>";
+		};
+		F596EAAA1E439EF500D1F092 /* FLXJ_AlertModuleView */ = {
+			isa = PBXGroup;
+			children = (
+				F596EAA71E439EF500D1F092 /* AlertModuleView.xib */,
+				F596EAA81E439EF500D1F092 /* AlertModuleView.h */,
+				F596EAA91E439EF500D1F092 /* AlertModuleView.m */,
+			);
+			name = FLXJ_AlertModuleView;
+			path = ../../../Desktop/AppleFiles/FLXJ_AlertModule/FLXJ_AlertModule;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,6 +376,7 @@
 				DD4BA9C119DED8EF008D73EB /* right_answer.mp3 in Resources */,
 				DDB15FD019D5B8BF00173158 /* Images.xcassets in Resources */,
 				DD7282B919D6087C00077F54 /* Storyboard.storyboard in Resources */,
+				F596EAAB1E439EF500D1F092 /* AlertModuleView.xib in Resources */,
 				08DD3F811DF864530099EC72 /* comic-sans.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,6 +412,7 @@
 				572BB1471B8383B3002DEE38 /* SCLTimerDisplay.m in Sources */,
 				DDB15FD719D5B96500173158 /* SCLAlertView.m in Sources */,
 				DDB15FDB19D5BAA000173158 /* SCLButton.m in Sources */,
+				F596EAAC1E439EF500D1F092 /* AlertModuleView.m in Sources */,
 				DDB15FCA19D5B88A00173158 /* AppDelegate.m in Sources */,
 				DDB15FDE19D5BCF400173158 /* SCLAlertViewResponder.m in Sources */,
 			);
